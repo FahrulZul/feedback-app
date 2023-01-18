@@ -243,7 +243,7 @@ background-color: var(--neutral600);
 }
 
 .feedback_item .feedback_btnDelete {
-    color: var(--red300);
+    color: var(--green400);
 }
 
 .feedback_item .feedback_btnDelete :hover {
