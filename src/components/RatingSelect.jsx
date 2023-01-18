@@ -1,37 +1,44 @@
-import {useContext, useEffect, useState} from 'react'
-import FeedbackContext from '../context/FeedbackContext';
+import { useContext, useEffect, useState } from "react";
+import FeedbackContext from "../context/FeedbackContext";
 
-function RatingSelect( { select } ) {
-    const [selected, setSelected] =useState(10)
-    const {feedbackEdit} = useContext(FeedbackContext)
+function RatingSelect({ select, currentRating }) {
+    const [selected, setSelected] = useState(10);
+    const { feedbackEdit } = useContext(FeedbackContext);
 
     useEffect(() => {
-        if(feedbackEdit.edit === true){
-            setSelected(feedbackEdit.item.rating)
+        if (feedbackEdit.edit === true) {
+            setSelected(feedbackEdit.item.rating);
         }
-    }, [feedbackEdit])
+    }, [feedbackEdit]);
+
+    useEffect(() => {
+        setSelected(currentRating);
+    }, [currentRating]);
 
     const handleChange = (e) => {
-        setSelected(+e.currentTarget.value)
-        select(+e.currentTarget.value)
+        setSelected(+e.currentTarget.value);
+        select(+e.currentTarget.value);
     };
 
     let element = [];
 
-    for(let i = 1; i <= 10; i++){
+    for (let i = 1; i <= 10; i++) {
         element.push(
             <li key={i}>
-                <input type="radio" id={`num${i}`} name="rating" value={`${i}`} checked={selected === i} onChange={handleChange}/>
+                <input
+                    type="radio"
+                    id={`num${i}`}
+                    name="rating"
+                    value={`${i}`}
+                    checked={selected === i}
+                    onChange={handleChange}
+                />
                 <label htmlFor={`num${i}`}>{i}</label>
             </li>
-        )
+        );
     }
 
-    return (
-        <ul className='rating'>
-            {element}
-        </ul>
-    )
+    return <ul className="rating">{element}</ul>;
 }
 
-export default RatingSelect
+export default RatingSelect;

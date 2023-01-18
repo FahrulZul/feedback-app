@@ -1,74 +1,89 @@
-import Card from "./shared/Card"
-import {FiSend} from "react-icons/fi"
-import Button from "./shared/Button"
-import {useState, useContext, useEffect} from "react"
-import RatingSelect from "./RatingSelect"
+import Card from "./shared/Card";
+import { FiSend } from "react-icons/fi";
+import Button from "./shared/Button";
+import { useState, useContext, useEffect } from "react";
+import RatingSelect from "./RatingSelect";
 
-import FeedbackContext from "../context/FeedbackContext"
+import FeedbackContext from "../context/FeedbackContext";
 
 function FeedbackForm() {
-    const [input, setInput] = useState('')
-    const [rating, setRating] = useState(10)
-    const [btnDisabled, setBtnDisabled] = useState(true)
-    const [message, setMessage] = useState('');
+    const [input, setInput] = useState("");
+    const [rating, setRating] = useState(10);
+    const [btnDisabled, setBtnDisabled] = useState(true);
+    const [message, setMessage] = useState("");
 
-    const {addFeedback, feedbackEdit, updateFeedback} = useContext(FeedbackContext)
+    const { addFeedback, feedbackEdit, updateFeedback } =
+        useContext(FeedbackContext);
 
     useEffect(() => {
-        if(feedbackEdit.edit === true){
-            setBtnDisabled(false)
-            setInput(feedbackEdit.item.text)
-            setRating(feedbackEdit.item.rating)
+        if (feedbackEdit.edit === true) {
+            setBtnDisabled(false);
+            setInput(feedbackEdit.item.text);
+            setRating(feedbackEdit.item.rating);
+        } else {
+            setInput("");
+            setRating(10);
         }
-    }, [feedbackEdit])
+    }, [feedbackEdit]);
 
-
-    const handleInputChange = ({target: {value}}) => {
-        if(value === ''){
-            setMessage(null)
-            setBtnDisabled(true)
-        }else if(value !== '' && input.trim().length <= 10){
-            setMessage('Text must be at least 10 characters!')
-            setBtnDisabled(true);
-        }else{
+    const handleInputChange = ({ target: { value } }) => {
+        if (value === "") {
             setMessage(null);
-            setBtnDisabled(false)
+            setBtnDisabled(true);
+        } else if (value !== "" && input.trim().length <= 10) {
+            setMessage("Text must be at least 10 characters!");
+            setBtnDisabled(true);
+        } else {
+            setMessage(null);
+            setBtnDisabled(false);
         }
-        setInput(value)
-    }
+        setInput(value);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(input.trim().length > 10){
+        if (input.trim().length > 10) {
             const newFeedback = {
                 rating,
-                text: input
-            }
+                text: input,
+            };
 
-            if(feedbackEdit.edit === true){
+            if (feedbackEdit.edit === true) {
                 updateFeedback(feedbackEdit.item.id, newFeedback);
-            }else{
+            } else {
                 addFeedback(newFeedback);
             }
+            setInput("");
+            setRating(10);
         }
-
-    }
+    };
 
     return (
         <Card customClass="form_card">
             <form onSubmit={handleSubmit}>
                 <h3>How would you rate your service with us?</h3>
-                <RatingSelect select={(rating) => setRating(rating)} />
+                <RatingSelect
+                    select={(rating) => setRating(rating)}
+                    currentRating={rating}
+                />
                 <div className="form_inputGroup">
-                    <input onChange={handleInputChange} type="text" value={input} placeholder="Write a review"/>
+                    <input
+                        onChange={handleInputChange}
+                        type="text"
+                        value={input}
+                        placeholder="Write a review"
+                    />
                     <Button type="submit" isDisabled={btnDisabled}>
-                        <span><FiSend/></span> Send
+                        <span>
+                            <FiSend />
+                        </span>{" "}
+                        Send
                     </Button>
                 </div>
                 {message && <p className="form_message">{message}</p>}
             </form>
         </Card>
-    )
+    );
 }
 
-export default FeedbackForm
+export default FeedbackForm;
